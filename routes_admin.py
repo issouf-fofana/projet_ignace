@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 
-from app import limiter
+from extensions import limiter
 from models import db, User, SiteSetting, Service, Tutorial, NewsItem, Document
 
 admin_bp = Blueprint("admin", __name__, template_folder="templates/admin")

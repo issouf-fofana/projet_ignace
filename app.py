@@ -1,15 +1,10 @@
 import os
 
 from flask import Flask
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from flask_login import LoginManager
-from flask_wtf import CSRFProtect
 
+from extensions import csrf, limiter
 from models import db, User
-
-csrf = CSRFProtect()
-limiter = Limiter(key_func=get_remote_address, default_limits=[])
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.environ.get("DATA_DIR", BASE_DIR)

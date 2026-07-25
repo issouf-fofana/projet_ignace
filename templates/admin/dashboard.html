@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+{% block title %}Tableau de bord - Administration{% endblock %}
+{% block content %}
+<h1>Tableau de bord</h1>
+<p class="sub">Vue d'ensemble du contenu du site.</p>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="num">{{ stats.services }}</div><div class="label">Services</div></div>
+  <div class="stat-card"><div class="num">{{ stats.tutorials }}</div><div class="label">Tutoriels</div></div>
+  <div class="stat-card"><div class="num">{{ stats.news_items }}</div><div class="label">Actualités</div></div>
+  <div class="stat-card"><div class="num">{{ stats.documents }}</div><div class="label">Documents</div></div>
+  <div class="stat-card"><div class="num">{{ stats.users }}</div><div class="label">Utilisateurs</div></div>
+</div>
+
+<p>Utilisez le menu à gauche pour éditer les textes du site, gérer les services, tutoriels, actualités et documents PDF.</p>
+{% endblock %}

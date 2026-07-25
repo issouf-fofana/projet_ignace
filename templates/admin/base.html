@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Administration - Ignace Yao{% endblock %}</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="admin-brand">Administration</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">Tableau de bord</a>
+    <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint == 'admin.settings' }}">Contenu du site</a>
+    <div class="divider"></div>
+    <a href="{{ url_for('admin.content_list', kind='services') }}" class="{{ 'active' if request.view_args and request.view_args.get('kind') == 'services' }}">Services</a>
+    <a href="{{ url_for('admin.tutorials_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.tutorials') }}">Tutoriels</a>
+    <a href="{{ url_for('admin.content_list', kind='news') }}" class="{{ 'active' if request.view_args and request.view_args.get('kind') == 'news' }}">Actualités</a>
+    <a href="{{ url_for('admin.documents_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.documents') }}">Documents</a>
+    {% if current_user.is_admin %}
+    <div class="divider"></div>
+    <a href="{{ url_for('admin.users_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.users') }}">Utilisateurs</a>
+    {% endif %}
+    <div class="divider"></div>
+    <a href="{{ url_for('public.index') }}" target="_blank">Voir le site ↗</a>
+    <a href="{{ url_for('admin.logout') }}" class="logout">Se déconnecter</a>
+  </aside>
+
+  <div style="flex:1 1 auto;display:flex;flex-direction:column">
+    <div class="admin-topbar">
+      <span class="user-chip">Connecté en tant que <strong>{{ current_user.name }}</strong> ({{ current_user.role }})</span>
+    </div>
+    <main class="admin-main">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% else %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="wrap" style="padding-top:20px">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content_guest %}{% endblock %}
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

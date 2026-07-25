@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+{% block title %}Contenu du site - Administration{% endblock %}
+{% block content %}
+<h1>Contenu du site</h1>
+<p class="sub">Textes affichés sur la page d'accueil, coordonnées, réseaux sociaux et couleurs du thème.</p>
+
+<form class="admin-form" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <h2 style="font-size:15px;margin:0 0 -6px">Image de fond (hero)</h2>
+  <div class="form-field">
+    <label for="hero_bg_image_file">Remplacer l'image de fond</label>
+    {% if values.get('hero_bg_image') %}
+      <img src="{{ url_for('static', filename='uploads/' ~ values.get('hero_bg_image')) }}" alt="" style="max-width:280px;border-radius:8px;margin-bottom:8px;display:block">
+    {% else %}
+      <img src="{{ url_for('static', filename='img/hero-cyber-default.svg') }}" alt="" style="max-width:280px;border-radius:8px;margin-bottom:8px;display:block">
+      <span class="sub" style="margin:0 0 8px">Image par défaut (motif cyber). Uploadez un fichier pour la remplacer.</span>
+    {% endif %}
+    <input type="file" id="hero_bg_image_file" name="hero_bg_image_file" accept="image/*">
+    {% if values.get('hero_bg_image') %}
+      <button type="submit" formaction="{{ url_for('admin.settings_hero_bg_remove') }}" class="btn-small" style="margin-top:8px;width:fit-content">Revenir à l'image par défaut</button>
+    {% endif %}
+  </div>
+
+  <h2 style="font-size:15px;margin:8px 0 -6px">Couleurs</h2>
+  {% for key, label in color_fields %}
+    <div class="form-field">
+      <label for="{{ key }}">{{ label }}</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="color" id="{{ key }}" name="{{ key }}" value="{{ values.get(key) or '#FFFFFF' }}" style="width:52px;height:38px;padding:2px;border:1px solid var(--border);border-radius:0;cursor:pointer"
+          oninput="document.getElementById('{{ key }}_text').value = this.value">
+        <input type="text" id="{{ key }}_text" value="{{ values.get(key) or '' }}" readonly
+          style="width:100px;color:var(--muted)">
+      </div>
+    </div>
+  {% endfor %}
+
+  <h2 style="font-size:15px;margin:8px 0 -6px">Textes</h2>
+  {% for key, label in fields %}
+    <div class="form-field">
+      <label for="{{ key }}">{{ label }}</label>
+      {% if key in ("hero_tagline", "about_text") %}
+        <textarea id="{{ key }}" name="{{ key }}">{{ values.get(key, "") }}</textarea>
+      {% else %}
+        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ values.get(key, '') }}">
+      {% endif %}
+    </div>
+  {% endfor %}
+  <div class="actions-row">
+    <button type="submit" class="btn">Enregistrer</button>
+  </div>
+</form>
+{% endblock %}

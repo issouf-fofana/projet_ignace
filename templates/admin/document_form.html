@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block title %}Modifier le document - Administration{% endblock %}
+{% block content %}
+<h1>Modifier le document</h1>
+
+<form class="admin-form" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-field">
+    <label for="title">Titre</label>
+    <input type="text" id="title" name="title" value="{{ doc.title }}" required>
+  </div>
+  <div class="form-field">
+    <label for="description">Description</label>
+    <textarea id="description" name="description">{{ doc.description or '' }}</textarea>
+  </div>
+  <div class="actions-row">
+    <button type="submit" class="btn">Enregistrer</button>
+    <a class="btn-small" href="{{ url_for('admin.documents_list') }}">Annuler</a>
+  </div>
+</form>
+{% endblock %}

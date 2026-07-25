@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Modifier' if item else 'Ajouter' }} {{ label|lower }} - Administration{% endblock %}
+{% block content %}
+<h1>{{ 'Modifier' if item else 'Ajouter' }} {{ label|lower }}</h1>
+
+<form class="admin-form" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-field">
+    <label for="title">Titre</label>
+    <input type="text" id="title" name="title" value="{{ item.title if item else '' }}" required>
+  </div>
+  <div class="form-field">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" required>{{ item.description if item else '' }}</textarea>
+  </div>
+  <div class="form-field">
+    <label for="position">Ordre d'affichage</label>
+    <input type="number" id="position" name="position" value="{{ item.position if item else 0 }}">
+  </div>
+  <div class="actions-row">
+    <button type="submit" class="btn">Enregistrer</button>
+    <a class="btn-small" href="{{ url_for('admin.content_list', kind=kind) }}">Annuler</a>
+  </div>
+</form>
+{% endblock %}

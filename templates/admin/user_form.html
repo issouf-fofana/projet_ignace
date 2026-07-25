@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Ajouter un utilisateur - Administration{% endblock %}
+{% block content %}
+<h1>Ajouter un utilisateur</h1>
+
+<form class="admin-form" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-field">
+    <label for="name">Nom</label>
+    <input type="text" id="name" name="name" required>
+  </div>
+  <div class="form-field">
+    <label for="email">E-mail</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div class="form-field">
+    <label for="password">Mot de passe</label>
+    <input type="password" id="password" name="password" required>
+  </div>
+  <div class="form-field">
+    <label for="role">Rôle</label>
+    <select id="role" name="role">
+      <option value="editor">Éditeur (gère le contenu)</option>
+      <option value="admin">Administrateur (gère aussi les utilisateurs)</option>
+    </select>
+  </div>
+  <div class="actions-row">
+    <button type="submit" class="btn">Créer le compte</button>
+    <a class="btn-small" href="{{ url_for('admin.users_list') }}">Annuler</a>
+  </div>
+</form>
+{% endblock %}

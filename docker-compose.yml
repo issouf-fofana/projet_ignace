@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+    volumes:
+      - app_data:/app/data
+      - app_uploads:/app/static/uploads
+
+volumes:
+  app_data:
+  app_uploads:

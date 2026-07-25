@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+site.db
+static/uploads/*
+!static/uploads/.gitkeep
+.git/
+.gitignore
+*.md
+start.sh
+start.bat

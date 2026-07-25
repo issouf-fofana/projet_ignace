@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% block title %}Utilisateurs - Administration{% endblock %}
+{% block content %}
+<h1>Utilisateurs</h1>
+<p class="sub">Gérez les comptes ayant accès à l'administration du site.</p>
+
+<div class="actions-row" style="margin-bottom:18px">
+  <a class="btn" href="{{ url_for('admin.users_new') }}">Ajouter un utilisateur</a>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr><th>Nom</th><th>E-mail</th><th>Rôle</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td class="row-actions">
+        {% if user.id != current_user.id %}
+        <form method="post" action="{{ url_for('admin.users_delete', user_id=user.id) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-small danger">Supprimer</button>
+        </form>
+        {% else %}
+        <span class="sub" style="margin:0">Vous</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

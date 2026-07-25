@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ settings.brand_name }} - {{ settings.brand_subtitle }}{% endblock %}</title>
+<meta name="description" content="Contenus, tutoriels et retours de terrain sur la sécurité des systèmes d'information, la sécurité des environnements et l'audit SI.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F5C4D'/%3E%3Cpath d='M16 6l8 3v7c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V9l8-3z' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  :root{
+    --bg:{{ settings.color_bg or '#FFFFFF' }};
+    --text:{{ settings.color_text or '#1A2129' }};
+    --accent:{{ settings.color_accent or '#1F5C4D' }};
+    --accent-2:{{ settings.color_accent_2 or '#2E6FA3' }};
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-inner">
+    <a class="brand" href="{{ url_for('public.index') }}#top" aria-label="Retour en haut de page">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#1F5C4D"></rect>
+        <path d="M16 7l7 2.6v6.1c0 4.4-3 7.4-7 8.8-4-1.4-7-4.4-7-8.8V9.6L16 7z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"></path>
+        <path d="M12.9 15.9l2.2 2.2 4-4.4" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span class="brand-name">{{ settings.brand_name }} <span>· {{ settings.brand_subtitle }}</span></span>
+    </a>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu de navigation" aria-expanded="false" aria-controls="mobileNav" type="button">
+      <span class="hamburger-inner"></span>
+    </button>
+
+    <nav class="topnav" id="mobileNav" aria-label="Navigation principale" role="navigation">
+      <ul>
+        <li><a href="{{ url_for('public.index') }}#a-propos" class="nav-link">Qui sommes-nous&nbsp;?</a></li>
+        <li><a href="{{ url_for('public.index') }}#services" class="nav-link">Nos services</a></li>
+        <li><a href="{{ url_for('public.index') }}#tutoriels" class="nav-link">Tutoriels</a></li>
+        <li><a href="{{ url_for('public.index') }}#actualites" class="nav-link">Actualités</a></li>
+        <li><a href="{{ url_for('public.documents') }}" class="nav-link">Documents</a></li>
+        <li><a href="{{ url_for('public.index') }}#contact" class="nav-link">Contactez-nous</a></li>
+        <li><a href="{{ url_for('admin.login') }}" class="nav-link nav-link-admin">Admin</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="nav-overlay" id="navOverlay"></div>
+
+<main id="top">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="wrap" style="padding-top:20px">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<section class="social" aria-labelledby="social-titre">
+  <div class="wrap">
+    <p id="social-titre">Retrouvez-moi également sur</p>
+    <div class="social-row">
+      <a href="{{ settings.linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="Profil LinkedIn (nouvel onglet)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C21.4 8.75 22 11 22 14.1V21h-4v-6.1c0-1.45-.03-3.32-2.05-3.32-2.05 0-2.37 1.58-2.37 3.21V21h-3.9V9z"></path>
+        </svg>
+      </a>
+      <a href="{{ settings.youtube_url }}" target="_blank" rel="noopener noreferrer" aria-label="Chaîne YouTube (nouvel onglet)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M21.6 7.2a2.5 2.5 0 0 0-1.75-1.77C18.28 5 12 5 12 5s-6.28 0-7.85.43A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.75 1.77C5.72 19 12 19 12 19s6.28 0 7.85-.43a2.5 2.5 0 0 0 1.75-1.77C22 15.2 22 12 22 12s0-3.2-.4-4.8zM10 15.1V8.9l5.2 3.1-5.2 3.1z"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>{{ settings.footer_text }}</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}Documents - Administration{% endblock %}
+{% block content %}
+<h1>Documents</h1>
+<p class="sub">Ajoutez, consultez et supprimez les documents PDF affichés sur le site.</p>
+
+<div class="upload-box" style="margin-bottom:24px">
+  <form action="{{ url_for('admin.documents_upload') }}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-field">
+      <label for="title">Titre du document</label>
+      <input type="text" id="title" name="title" placeholder="Ex. Rapport d'audit 2026">
+    </div>
+    <div class="form-field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" placeholder="Résumé du contenu du document" style="min-width:200px"></textarea>
+    </div>
+    <div class="form-field">
+      <label for="pdf_file">Fichier PDF</label>
+      <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" required>
+    </div>
+    <button type="submit" class="btn">Ajouter</button>
+  </form>
+</div>
+
+{% if documents %}
+<table class="admin-table">
+  <thead>
+    <tr><th>Titre</th><th>Description</th><th>Ajouté le</th><th>Par</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for doc in documents %}
+    <tr>
+      <td>{{ doc.title }}</td>
+      <td>{{ (doc.description or '—')[:60] }}{% if doc.description and doc.description|length > 60 %}…{% endif %}</td>
+      <td>{{ doc.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>{{ doc.uploaded_by.name if doc.uploaded_by else '—' }}</td>
+      <td class="row-actions">
+        <a class="btn-small" href="{{ url_for('admin.documents_edit', doc_id=doc.id) }}">Modifier</a>
+        <a class="btn-small" href="{{ url_for('public.view_document', doc_id=doc.id) }}" target="_blank">Voir</a>
+        <form method="post" action="{{ url_for('admin.documents_delete', doc_id=doc.id) }}" onsubmit="return confirm('Supprimer ce document ?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-small danger">Supprimer</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state">Aucun document pour le moment.</p>
+{% endif %}
+{% endblock %}

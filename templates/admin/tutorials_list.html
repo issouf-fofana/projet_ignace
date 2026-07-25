@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% block title %}Tutoriels - Administration{% endblock %}
+{% block content %}
+<h1>Tutoriels</h1>
+<p class="sub">Gérez les guides pratiques : texte, image et vidéo (YouTube/Vimeo).</p>
+
+<div class="actions-row" style="margin-bottom:18px">
+  <a class="btn" href="{{ url_for('admin.tutorials_new') }}">Ajouter un tutoriel</a>
+</div>
+
+{% if items %}
+<table class="admin-table">
+  <thead>
+    <tr><th>Ordre</th><th>Titre</th><th>Média</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.position }}</td>
+      <td>{{ item.title }}</td>
+      <td>
+        {% if item.image_filename %}<span class="btn-small" style="pointer-events:none">Image</span>{% endif %}
+        {% if item.video_url %}<span class="btn-small" style="pointer-events:none">Vidéo</span>{% endif %}
+        {% if not item.image_filename and not item.video_url %}—{% endif %}
+      </td>
+      <td class="row-actions">
+        <a class="btn-small" href="{{ url_for('admin.tutorials_edit', item_id=item.id) }}">Modifier</a>
+        <form method="post" action="{{ url_for('admin.tutorials_delete', item_id=item.id) }}" onsubmit="return confirm('Supprimer ce tutoriel ?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-small danger">Supprimer</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state">Aucun tutoriel pour le moment.</p>
+{% endif %}
+{% endblock %}

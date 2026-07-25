@@ -58,12 +58,17 @@ def create_app():
     app.config["UPLOAD_DIR"] = UPLOAD_DIR
 
     # Cookies de session sécurisés
+    # SESSION_COOKIE_SECURE exige HTTPS pour envoyer le cookie : à activer dès
+    # qu'un vrai domaine avec certificat SSL valide est configuré (sinon le
+    # cookie de session/CSRF n'est jamais transmis et le login échoue).
+    force_https_cookies = os.environ.get("FORCE_HTTPS_COOKIES", "true").lower() == "true"
+    secure_cookies = is_production and force_https_cookies
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-    app.config["SESSION_COOKIE_SECURE"] = is_production
+    app.config["SESSION_COOKIE_SECURE"] = secure_cookies
     app.config["REMEMBER_COOKIE_HTTPONLY"] = True
     app.config["REMEMBER_COOKIE_SAMESITE"] = "Lax"
-    app.config["REMEMBER_COOKIE_SECURE"] = is_production
+    app.config["REMEMBER_COOKIE_SECURE"] = secure_cookies
 
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 

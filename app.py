@@ -45,7 +45,14 @@ def create_app():
         secret_key = "dev-secret-key-change-me"
     app.secret_key = secret_key
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_PATH}"
+    database_url = os.environ.get("DATABASE_URL")
+    if database_url:
+        # Render/Heroku-style URLs utilisent "postgres://", SQLAlchemy exige "postgresql://"
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_PATH}"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
     app.config["UPLOAD_DIR"] = UPLOAD_DIR

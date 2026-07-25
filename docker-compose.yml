@@ -6,10 +6,29 @@ services:
       - "5000:5000"
     environment:
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ignace}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-ignace}
+      FLASK_ENV: ${FLASK_ENV:-production}
     volumes:
-      - app_data:/app/data
       - app_uploads:/app/static/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ignace}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-ignace}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ignace}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  app_data:
+  db_data:
   app_uploads:

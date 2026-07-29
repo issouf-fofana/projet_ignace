@@ -49,7 +49,7 @@ a{color:inherit;text-decoration:none}
    HEADER
    ========================================================= */
 .site-header{
-  position:sticky;top:0;z-index:var(--z-header);
+  position:sticky;top:0;z-index:210;
   background:var(--accent-2);
   border-bottom:1px solid rgba(255,255,255,.08);
 }
@@ -140,38 +140,36 @@ a{color:inherit;text-decoration:none}
   display:block;
   position:fixed;
   inset:0;
-  z-index:calc(var(--z-nav) - 1);
+  z-index:190;
   background:rgba(0,0,0,.3);
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
   opacity:0;
   visibility:hidden;
-  transition:opacity .3s ease,visibility 0ms linear .3s;
+  transition:opacity .3s ease,visibility 0s linear .3s;
 }
 .nav-overlay.open{
   opacity:1;
   visibility:visible;
-  transition:opacity .3s ease,visibility 0ms linear 0ms;
+  transition:opacity .3s ease,visibility 0s linear 0s;
 }
 
 @media (max-width:767px){
   .hamburger{display:block}
 
   .topnav{
+    display:block;
     position:fixed;
     top:0;
     right:0;
-    z-index:var(--z-nav);
+    bottom:0;
+    z-index:200;
     width:min(320px,80vw);
-    height:100vh;
-    height:100dvh;
-    background:var(--bg);
+    background:#ffffff;
     border-left:1px solid var(--border);
     padding:calc(var(--header-h) + 8px) 20px 24px;
     overflow-y:auto;
     transform:translateX(100%);
-    transition:transform var(--nav-transition),box-shadow var(--nav-transition);
     box-shadow:none;
+    transition:transform .3s cubic-bezier(.22,.68,0,1),box-shadow .3s cubic-bezier(.22,.68,0,1);
   }
   .topnav.open{
     transform:translateX(0);
@@ -187,8 +185,11 @@ a{color:inherit;text-decoration:none}
     font-size:16px;
     border-radius:8px;
     white-space:normal;
+    color:var(--text);
   }
+  .topnav a:hover{color:var(--text);background:var(--surface)}
   .topnav a:active{background:var(--surface-2);transform:none}
+  .nav-link-admin{border-color:var(--border) !important}
 }
 
 /* =========================================================
@@ -510,9 +511,7 @@ h1{margin:0;font-size:clamp(32px,7vw,56px);line-height:1.05;font-weight:800;lett
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation-duration:.01ms !important;animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
   }
-  .topnav{transition:none}
   .reveal{opacity:1;transform:none}
 }
 

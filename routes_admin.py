@@ -106,6 +106,29 @@ def _set_setting(key, value):
     row.value = value
 
 
+def _handle_setting_image_upload(setting_key, file_field_name, error_label):
+    """Traite l'upload d'une image associée à une clé SiteSetting.
+    Retourne True si un fichier a été traité (avec succès ou erreur), False si aucun fichier fourni.
+    """
+    image_file = request.files.get(file_field_name)
+    if not image_file or not image_file.filename:
+        return False, None
+
+    if not allowed_file(image_file.filename, ALLOWED_IMAGE_EXTENSIONS):
+        return True, f"Format d'image non supporté pour {error_label} (jpg, png, gif, webp)."
+
+    old_name = db.session.get(SiteSetting, setting_key)
+    if old_name and old_name.value:
+        old_path = os.path.join(current_app.config["UPLOAD_DIR"], old_name.value)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+    original_name = secure_filename(image_file.filename)
+    new_name = f"{uuid.uuid4().hex}_{original_name}"
+    image_file.save(os.path.join(current_app.config["UPLOAD_DIR"], new_name))
+    _set_setting(setting_key, new_name)
+    return True, None
+
+
 @admin_bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
@@ -113,20 +136,14 @@ def settings():
         for key, _ in SETTINGS_FIELDS + COLOR_FIELDS:
             _set_setting(key, request.form.get(key, "").strip())
 
-        hero_bg_file = request.files.get("hero_bg_image_file")
-        if hero_bg_file and hero_bg_file.filename:
-            if not allowed_file(hero_bg_file.filename, ALLOWED_IMAGE_EXTENSIONS):
-                flash("Format d'image non supporté pour le fond du hero (jpg, png, gif, webp).", "error")
+        for setting_key, file_field_name, error_label in (
+            ("hero_bg_image", "hero_bg_image_file", "le fond du hero"),
+            ("about_image", "about_image_file", "la photo 'à propos'"),
+        ):
+            handled, error = _handle_setting_image_upload(setting_key, file_field_name, error_label)
+            if handled and error:
+                flash(error, "error")
                 return redirect(url_for("admin.settings"))
-            old_name = db.session.get(SiteSetting, "hero_bg_image")
-            if old_name and old_name.value:
-                old_path = os.path.join(current_app.config["UPLOAD_DIR"], old_name.value)
-                if os.path.exists(old_path):
-                    os.remove(old_path)
-            original_name = secure_filename(hero_bg_file.filename)
-            new_name = f"{uuid.uuid4().hex}_{original_name}"
-            hero_bg_file.save(os.path.join(current_app.config["UPLOAD_DIR"], new_name))
-            _set_setting("hero_bg_image", new_name)
 
         db.session.commit()
         flash("Paramètres du site mis à jour.", "success")
@@ -136,18 +153,28 @@ def settings():
     return render_template("admin/settings.html", fields=SETTINGS_FIELDS, color_fields=COLOR_FIELDS, values=rows)
 
 
-@admin_bp.route("/settings/hero-bg/remove", methods=["POST"])
-@login_required
-def settings_hero_bg_remove():
-    row = db.session.get(SiteSetting, "hero_bg_image")
+def _remove_setting_image(setting_key, success_message):
+    row = db.session.get(SiteSetting, setting_key)
     if row and row.value:
         old_path = os.path.join(current_app.config["UPLOAD_DIR"], row.value)
         if os.path.exists(old_path):
             os.remove(old_path)
         row.value = ""
         db.session.commit()
-        flash("Image de fond réinitialisée (fond par défaut).", "success")
+        flash(success_message, "success")
     return redirect(url_for("admin.settings"))
+
+
+@admin_bp.route("/settings/hero-bg/remove", methods=["POST"])
+@login_required
+def settings_hero_bg_remove():
+    return _remove_setting_image("hero_bg_image", "Image de fond réinitialisée (fond par défaut).")
+
+
+@admin_bp.route("/settings/about-image/remove", methods=["POST"])
+@login_required
+def settings_about_image_remove():
+    return _remove_setting_image("about_image", "Photo 'à propos' supprimée.")
 
 
 # ---------- GENERIC CONTENT CRUD (services, news) ----------

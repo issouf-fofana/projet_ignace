@@ -114,6 +114,20 @@
 
 <section class="section reveal" id="a-propos">
   <div class="wrap">
+    {% if settings.about_image %}
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>Qui sommes-nous&nbsp;?</h2>
+        <p class="lead">{{ settings.about_text }}</p>
+        <ul class="credibility">
+          {% for badge in settings.credibility_list %}
+            <li>{{ badge }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <img class="about-image" src="{{ url_for('static', filename='uploads/' ~ settings.about_image) }}" alt="{{ settings.brand_name }}">
+    </div>
+    {% else %}
     <h2>Qui sommes-nous&nbsp;?</h2>
     <p class="lead">{{ settings.about_text }}</p>
     <ul class="credibility">
@@ -121,6 +135,7 @@
         <li>{{ badge }}</li>
       {% endfor %}
     </ul>
+    {% endif %}
   </div>
 </section>
 

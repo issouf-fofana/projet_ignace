@@ -21,6 +21,20 @@
     {% endif %}
   </div>
 
+  <h2 style="font-size:15px;margin:8px 0 -6px">Photo "Qui sommes-nous ?"</h2>
+  <div class="form-field">
+    <label for="about_image_file">{{ 'Remplacer la photo' if values.get('about_image') else 'Ajouter une photo (optionnel)' }}</label>
+    {% if values.get('about_image') %}
+      <img src="{{ url_for('static', filename='uploads/' ~ values.get('about_image')) }}" alt="" style="max-width:200px;border-radius:8px;margin-bottom:8px;display:block">
+    {% else %}
+      <span class="sub" style="margin:0 0 8px">Aucune photo actuellement. Le texte s'affiche seul sur toute la largeur.</span>
+    {% endif %}
+    <input type="file" id="about_image_file" name="about_image_file" accept="image/*">
+    {% if values.get('about_image') %}
+      <button type="submit" formaction="{{ url_for('admin.settings_about_image_remove') }}" class="btn-small" style="margin-top:8px;width:fit-content">Supprimer la photo</button>
+    {% endif %}
+  </div>
+
   <h2 style="font-size:15px;margin:8px 0 -6px">Couleurs</h2>
   {% for key, label in color_fields %}
     <div class="form-field">

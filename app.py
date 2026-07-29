@@ -29,6 +29,7 @@ DEFAULT_SETTINGS = {
     "color_accent": "#F5760A",
     "color_accent_2": "#0F1D3D",
     "hero_bg_image": "",
+    "about_image": "",
 }
 
 

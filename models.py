@@ -41,6 +41,7 @@ class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    link_url = db.Column(db.String(500), nullable=True)
     position = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -53,6 +54,7 @@ class Tutorial(db.Model):
     description = db.Column(db.Text, nullable=False)
     image_filename = db.Column(db.String(300), nullable=True)
     video_url = db.Column(db.String(500), nullable=True)
+    link_url = db.Column(db.String(500), nullable=True)
     position = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -63,6 +65,7 @@ class NewsItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    link_url = db.Column(db.String(500), nullable=True)
     position = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

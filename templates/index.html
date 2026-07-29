@@ -134,6 +134,9 @@
       <div class="item reveal">
         <h3>{{ service.title }}</h3>
         <p>{{ service.description }}</p>
+        {% if service.link_url %}
+        <a class="item-more" href="{{ service.link_url }}" target="_blank" rel="noopener noreferrer">En savoir plus →</a>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
@@ -185,6 +188,9 @@
         {% endif %}
         <h3 id="modal-title-{{ tutorial.id }}">{{ tutorial.title }}</h3>
         <p class="modal-desc">{{ tutorial.description }}</p>
+        {% if tutorial.link_url %}
+        <a class="btn" style="margin-top:20px" href="{{ tutorial.link_url }}" target="_blank" rel="noopener noreferrer">Ouvrir le lien →</a>
+        {% endif %}
       </div>
     </div>
     {% endfor %}
@@ -217,6 +223,9 @@
         </button>
         <h3 id="modal-title-news-{{ news.id }}">{{ news.title }}</h3>
         <p class="modal-desc">{{ news.description }}</p>
+        {% if news.link_url %}
+        <a class="btn" style="margin-top:20px" href="{{ news.link_url }}" target="_blank" rel="noopener noreferrer">Ouvrir le lien →</a>
+        {% endif %}
       </div>
     </div>
     {% endfor %}

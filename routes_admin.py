@@ -178,11 +178,12 @@ def content_new(kind):
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         description = request.form.get("description", "").strip()
+        link_url = request.form.get("link_url", "").strip()
         position = request.form.get("position", 0, type=int)
         if not title or not description:
             flash("Le titre et la description sont obligatoires.", "error")
         else:
-            item = model(title=title, description=description, position=position)
+            item = model(title=title, description=description, link_url=link_url or None, position=position)
             db.session.add(item)
             db.session.commit()
             flash(f"{label} ajouté.", "success")
@@ -202,6 +203,7 @@ def content_edit(kind, item_id):
     if request.method == "POST":
         item.title = request.form.get("title", "").strip()
         item.description = request.form.get("description", "").strip()
+        item.link_url = request.form.get("link_url", "").strip() or None
         item.position = request.form.get("position", 0, type=int)
         db.session.commit()
         flash(f"{label} mis à jour.", "success")
@@ -239,6 +241,7 @@ def tutorials_new():
         title = request.form.get("title", "").strip()
         description = request.form.get("description", "").strip()
         video_url = request.form.get("video_url", "").strip()
+        link_url = request.form.get("link_url", "").strip()
         position = request.form.get("position", 0, type=int)
         image_file = request.files.get("image_file")
 
@@ -257,7 +260,7 @@ def tutorials_new():
 
         item = Tutorial(
             title=title, description=description, position=position,
-            video_url=video_url or None, image_filename=image_filename,
+            video_url=video_url or None, link_url=link_url or None, image_filename=image_filename,
         )
         db.session.add(item)
         db.session.commit()
@@ -276,6 +279,7 @@ def tutorials_edit(item_id):
         item.title = request.form.get("title", "").strip()
         item.description = request.form.get("description", "").strip()
         item.video_url = request.form.get("video_url", "").strip() or None
+        item.link_url = request.form.get("link_url", "").strip() or None
         item.position = request.form.get("position", 0, type=int)
 
         image_file = request.files.get("image_file")

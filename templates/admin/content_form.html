@@ -14,6 +14,10 @@
     <textarea id="description" name="description" required>{{ item.description if item else '' }}</textarea>
   </div>
   <div class="form-field">
+    <label for="link_url">Lien externe (optionnel)</label>
+    <input type="url" id="link_url" name="link_url" value="{{ item.link_url if item and item.link_url else '' }}" placeholder="https://...">
+  </div>
+  <div class="form-field">
     <label for="position">Ordre d'affichage</label>
     <input type="number" id="position" name="position" value="{{ item.position if item else 0 }}">
   </div>

@@ -141,8 +141,8 @@
 
 <section class="section" id="services">
   <div class="wrap">
-    <h2 class="reveal">Nos services</h2>
-    <p class="lead reveal">Un accompagnement concret, adapté à la maturité et aux contraintes de votre organisation.</p>
+    <h2 class="reveal">{{ settings.services_title }}</h2>
+    <p class="lead reveal">{{ settings.services_lead }}</p>
     {% if services %}
     <div class="item-list reveal-group">
       {% for service in services %}
@@ -163,8 +163,8 @@
 
 <section class="section" id="tutoriels">
   <div class="wrap">
-    <h2 class="reveal">Tutoriels</h2>
-    <p class="lead reveal">Guides pratiques pas à pas pour appliquer les bonnes pratiques de sécurité au quotidien.</p>
+    <h2 class="reveal">{{ settings.tutorials_title }}</h2>
+    <p class="lead reveal">{{ settings.tutorials_lead }}</p>
     {% if tutorials %}
     <div class="item-list reveal-group">
       {% for tutorial in tutorials %}
@@ -217,8 +217,8 @@
 
 <section class="section" id="actualites">
   <div class="wrap">
-    <h2 class="reveal">Actualités</h2>
-    <p class="lead reveal">Veille et décryptage sur l'actualité cybersécurité et les évolutions réglementaires.</p>
+    <h2 class="reveal">{{ settings.news_title }}</h2>
+    <p class="lead reveal">{{ settings.news_lead }}</p>
     {% if news_items %}
     <div class="item-list reveal-group">
       {% for news in news_items %}
@@ -252,8 +252,8 @@
 
 <section class="section reveal" id="contact" style="border-bottom:none">
   <div class="wrap">
-    <h2>Contactez-nous</h2>
-    <p class="lead">Une question, un projet d'audit ou de mise en conformité&nbsp;? Parlons-en.</p>
+    <h2>{{ settings.contact_title }}</h2>
+    <p class="lead">{{ settings.contact_lead }}</p>
     <a class="btn" href="mailto:{{ settings.contact_email }}">Envoyer un e-mail</a>
   </div>
 </section>

@@ -30,6 +30,14 @@ DEFAULT_SETTINGS = {
     "color_accent_2": "#0F1D3D",
     "hero_bg_image": "",
     "about_image": "",
+    "services_title": "Nos services",
+    "services_lead": "Un accompagnement concret, adapté à la maturité et aux contraintes de votre organisation.",
+    "tutorials_title": "Tutoriels",
+    "tutorials_lead": "Guides pratiques pas à pas pour appliquer les bonnes pratiques de sécurité au quotidien.",
+    "news_title": "Veille Cybersécurité & IA",
+    "news_lead": "Veille et décryptage sur l'actualité cybersécurité et les évolutions réglementaires.",
+    "contact_title": "Contactez-nous",
+    "contact_lead": "Une question, un projet d'audit ou de mise en conformité ? Parlons-en.",
 }
 
 

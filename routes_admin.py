@@ -185,10 +185,9 @@ def settings_about_image_remove():
     return _remove_setting_image("about_image", "Photo 'à propos' supprimée.")
 
 
-# ---------- GENERIC CONTENT CRUD (services, news) ----------
+# ---------- GENERIC CONTENT CRUD (news) ----------
 
 CONTENT_MODELS = {
-    "services": (Service, "Service"),
     "news": (NewsItem, "Actualité"),
 }
 
@@ -258,6 +257,76 @@ def content_delete(kind, item_id):
     db.session.commit()
     flash(f"{label} supprimé.", "success")
     return redirect(url_for("admin.content_list", kind=kind))
+
+
+# ---------- SERVICES (code + fonction + livrables + valeur ajoutée) ----------
+
+@admin_bp.route("/content/services")
+@login_required
+def services_list():
+    items = Service.query.order_by(Service.position, Service.id).all()
+    return render_template("admin/services_list.html", items=items)
+
+
+def _service_form_data():
+    return {
+        "code": request.form.get("code", "").strip() or None,
+        "function_tag": request.form.get("function_tag", "").strip() or None,
+        "title": request.form.get("title", "").strip(),
+        "description": request.form.get("description", "").strip(),
+        "deliverables": request.form.get("deliverables", "").strip() or None,
+        "value_text": request.form.get("value_text", "").strip() or None,
+        "link_url": request.form.get("link_url", "").strip() or None,
+        "position": request.form.get("position", 0, type=int),
+    }
+
+
+@admin_bp.route("/content/services/new", methods=["GET", "POST"])
+@login_required
+def services_new():
+    if request.method == "POST":
+        data = _service_form_data()
+        if not data["title"] or not data["description"]:
+            flash("Le titre et la description sont obligatoires.", "error")
+            return render_template("admin/service_form.html", item=None)
+
+        item = Service(**data)
+        db.session.add(item)
+        db.session.commit()
+        flash("Service ajouté.", "success")
+        return redirect(url_for("admin.services_list"))
+
+    return render_template("admin/service_form.html", item=None)
+
+
+@admin_bp.route("/content/services/<int:item_id>/edit", methods=["GET", "POST"])
+@login_required
+def services_edit(item_id):
+    item = Service.query.get_or_404(item_id)
+
+    if request.method == "POST":
+        data = _service_form_data()
+        if not data["title"] or not data["description"]:
+            flash("Le titre et la description sont obligatoires.", "error")
+            return render_template("admin/service_form.html", item=item)
+
+        for key, value in data.items():
+            setattr(item, key, value)
+        db.session.commit()
+        flash("Service mis à jour.", "success")
+        return redirect(url_for("admin.services_list"))
+
+    return render_template("admin/service_form.html", item=item)
+
+
+@admin_bp.route("/content/services/<int:item_id>/delete", methods=["POST"])
+@login_required
+def services_delete(item_id):
+    item = Service.query.get_or_404(item_id)
+    db.session.delete(item)
+    db.session.commit()
+    flash("Service supprimé.", "success")
+    return redirect(url_for("admin.services_list"))
 
 
 # ---------- TUTORIALS (texte + image + vidéo) ----------

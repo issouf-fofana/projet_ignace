@@ -39,11 +39,21 @@ class Service(db.Model):
     __tablename__ = "services"
 
     id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(20), nullable=True)
+    function_tag = db.Column(db.String(120), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    deliverables = db.Column(db.Text, nullable=True)  # une ligne = un livrable
+    value_text = db.Column(db.Text, nullable=True)
     link_url = db.Column(db.String(500), nullable=True)
     position = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @property
+    def deliverables_list(self):
+        if not self.deliverables:
+            return []
+        return [line.strip() for line in self.deliverables.splitlines() if line.strip()]
 
 
 class Tutorial(db.Model):

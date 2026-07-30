@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACK CISO-as-a-Service — Catalogue de services managés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1622;          /* midnight navy ground */
+    --ink-2:#111F30;        /* raised panel on dark */
+    --ink-line:#22384f;     /* hairlines on dark */
+    --paper:#F4F2EC;        /* warm dossier paper */
+    --paper-2:#FBFAF6;      /* raised card */
+    --paper-line:#E0DCD0;   /* hairlines on light */
+    --text:#132234;         /* body ink */
+    --text-soft:#4C5A6A;    /* muted */
+    --signal:#E8A13C;       /* signal amber accent */
+    --signal-deep:#C97E1D;
+    --steel:#3E7C8C;        /* quiet structural cyan */
+    --steel-soft:#7FA6B0;
+    --ok:#2F7D5B;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{
+    font-family:var(--sans);
+    background:var(--ink);
+    color:var(--text);
+    line-height:1.5;
+  }
+  .sheet{
+    max-width:1120px;
+    margin:0 auto;
+    background:var(--paper);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:var(--ink);
+    color:var(--paper);
+    padding:64px 56px 52px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--ink-line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--ink-line) 1px,transparent 1px);
+    background-size:34px 34px;
+    opacity:.35;
+    -webkit-mask-image:radial-gradient(ellipse 80% 90% at 78% 12%,#000 0%,transparent 72%);
+            mask-image:radial-gradient(ellipse 80% 90% at 78% 12%,#000 0%,transparent 72%);
+  }
+  .hero > *{position:relative;z-index:1;}
+  .brandline{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--steel-soft);
+    border-bottom:1px solid var(--ink-line);
+    padding-bottom:16px;margin-bottom:40px;
+  }
+  .brandline .mark{color:var(--paper);font-weight:600;letter-spacing:.14em;}
+  .brandline .mark b{color:var(--signal);}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--signal);margin-bottom:22px;
+  }
+  h1.title{
+    font-size:clamp(38px,6.2vw,74px);
+    font-weight:600;line-height:.98;letter-spacing:-.02em;
+    max-width:15ch;
+  }
+  h1.title .aas{color:var(--steel-soft);font-weight:300;}
+  .lede{
+    margin-top:26px;max-width:60ch;
+    font-size:17px;color:#C7D2DC;font-weight:300;
+  }
+  .lede b{color:var(--paper);font-weight:500;}
+
+  .codestrip{
+    display:flex;flex-wrap:wrap;gap:7px;margin-top:38px;
+  }
+  .codestrip span{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    color:var(--steel-soft);
+    border:1px solid var(--ink-line);border-radius:2px;
+    padding:5px 9px;
+  }
+
+  /* ---------- POSITIONING BAND ---------- */
+  .band{
+    background:var(--ink-2);color:var(--paper);
+    border-top:1px solid var(--ink-line);
+    padding:30px 56px;
+    display:grid;grid-template-columns:1.4fr 1fr;gap:44px;align-items:center;
+  }
+  .band .claim{font-size:15px;font-weight:300;color:#C7D2DC;max-width:52ch;}
+  .band .claim b{color:var(--signal);font-weight:500;}
+  .refs .rlabel{
+    font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--steel-soft);margin-bottom:11px;
+  }
+  .refs .rlist{display:flex;flex-wrap:wrap;gap:6px;}
+  .refs .rlist b{
+    font-family:var(--mono);font-size:11px;font-weight:500;
+    color:var(--paper);background:rgba(232,161,60,.10);
+    border:1px solid rgba(232,161,60,.35);border-radius:2px;
+    padding:5px 8px;
+  }
+
+  /* ---------- CATALOG ---------- */
+  .catalog{padding:52px 56px 20px;}
+  .cat-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    border-bottom:2px solid var(--text);padding-bottom:12px;margin-bottom:34px;
+  }
+  .cat-head h2{
+    font-size:22px;font-weight:600;letter-spacing:-.01em;
+  }
+  .cat-head .count{font-family:var(--mono);font-size:12px;color:var(--text-soft);letter-spacing:.1em;}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(2,1fr);
+    gap:1px;background:var(--paper-line);
+    border:1px solid var(--paper-line);
+  }
+
+  .card{
+    background:var(--paper-2);
+    padding:26px 26px 28px;
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+  .card-top{
+    display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  }
+  .code{
+    font-family:var(--mono);font-size:12px;font-weight:600;
+    letter-spacing:.06em;color:var(--ink);
+    background:var(--signal);border-radius:2px;
+    padding:4px 8px;white-space:nowrap;
+  }
+  .func{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--steel);
+    border:1px solid var(--steel-soft);border-radius:2px;
+    padding:3px 7px;
+  }
+  .card h3{
+    font-size:18px;font-weight:600;line-height:1.2;
+    letter-spacing:-.01em;margin-bottom:10px;color:var(--text);
+  }
+  .desc{font-size:13.5px;color:var(--text-soft);margin-bottom:16px;font-weight:400;}
+
+  .deliv-label,.value-label{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--steel);margin-bottom:8px;
+  }
+  ul.deliv{list-style:none;margin-bottom:16px;}
+  ul.deliv li{
+    font-size:12.5px;color:var(--text);line-height:1.42;
+    padding-left:16px;position:relative;margin-bottom:6px;
+  }
+  ul.deliv li::before{
+    content:"";position:absolute;left:0;top:7px;
+    width:6px;height:6px;background:var(--signal);
+    transform:rotate(45deg);
+  }
+  .value{
+    margin-top:auto;
+    border-top:1px solid var(--paper-line);padding-top:13px;
+  }
+  .value p{font-size:12.5px;color:var(--text);font-weight:500;line-height:1.45;}
+
+  /* ---------- CLOSING ---------- */
+  .close{
+    background:var(--ink);color:var(--paper);
+    padding:46px 56px 40px;margin-top:32px;
+    display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:end;
+  }
+  .close .ceyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--signal);margin-bottom:16px;
+  }
+  .close h2{font-size:clamp(24px,3.5vw,34px);font-weight:600;line-height:1.08;letter-spacing:-.01em;max-width:20ch;}
+  .close p{margin-top:14px;font-size:14px;color:#C7D2DC;font-weight:300;max-width:46ch;}
+  .contact{font-family:var(--mono);font-size:12px;color:var(--steel-soft);line-height:2;}
+  .contact b{color:var(--paper);font-weight:500;}
+  .contact .row span{color:var(--signal);}
+  .footline{
+    background:var(--ink);color:var(--steel-soft);
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;
+    border-top:1px solid var(--ink-line);
+    padding:16px 56px 30px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:820px){
+    .hero{padding:44px 26px 38px;}
+    .band{grid-template-columns:1fr;gap:24px;padding:26px;}
+    .catalog{padding:40px 26px 16px;}
+    .grid{grid-template-columns:1fr;}
+    .close{grid-template-columns:1fr;gap:26px;padding:38px 26px;}
+    .footline{padding:16px 26px 26px;}
+    h1.title{font-size:clamp(34px,10vw,52px);}
+  }
+
+  @media (prefers-reduced-motion:no-preference){
+    .card{opacity:0;transform:translateY(10px);animation:rise .5s ease forwards;}
+    .card:nth-child(1){animation-delay:.02s}.card:nth-child(2){animation-delay:.05s}
+    .card:nth-child(3){animation-delay:.08s}.card:nth-child(4){animation-delay:.11s}
+    .card:nth-child(5){animation-delay:.14s}.card:nth-child(6){animation-delay:.17s}
+    @keyframes rise{to{opacity:1;transform:none;}}
+  }
+
+  /* ---------- PRINT (A4) ---------- */
+  @media print{
+    @page{size:A4;margin:12mm;}
+    body{background:#fff;}
+    .sheet{max-width:none;}
+    .hero,.close,.footline,.band{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .card{opacity:1 !important;transform:none !important;animation:none !important;}
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .card{break-inside:avoid;}
+    .catalog{padding:22px 0 0;}
+    .cat-head{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="brandline">
+      <span class="mark">CISO<b>.</b>as-a-Service</span>
+      <span>Catalogue de services managés · Éd. 2025</span>
+    </div>
+    <div class="eyebrow">Sécurité pilotée · à la carte</div>
+    <h1 class="title">La fonction sécurité,<br>opérée pour vous.<span class="aas"></span></h1>
+    <p class="lede">Douze briques modulaires pour construire, opérer et démontrer votre posture de sécurité — <b>sans immobiliser l'expertise rare en interne</b>. Chaque service produit des preuves exploitables en audit et en certification.</p>
+    <div class="codestrip">
+      <span>EPP · Endpoint</span><span>IAM · Identités</span><span>VMS · Vulnérabilités</span>
+      <span>NET · Réseau</span><span>DAT · Données</span><span>AWR · Sensibilisation</span>
+      <span>BCK · Sauvegarde</span><span>PEN · Pentest</span><span>AIS · IA</span>
+      <span>SOC · Détection</span><span>GRC · Conformité</span><span>MAT · Maturité</span>
+    </div>
+  </header>
+
+  <!-- POSITIONING BAND -->
+  <section class="band">
+    <p class="claim">Une approche <b>basée sur le risque</b> et alignée par défaut sur les référentiels de référence. Vous consommez ce dont vous avez besoin, quand vous en avez besoin — chaque brique s'active indépendamment ou se combine en dispositif complet.</p>
+    <div class="refs">
+      <div class="rlabel">Alignement multi-référentiel</div>
+      <div class="rlist">
+        <b>ISO/IEC 27001:2022</b><b>NIST CSF 2.0</b><b>CIS Controls v8</b><b>PCI DSS v4.0</b><b>RGSSI 2025</b><b>MITRE ATT&CK</b>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <main class="catalog">
+    <div class="cat-head">
+      <h2>Le catalogue à la carte</h2>
+      <span class="count">12 SERVICES · MODULAIRES</span>
+    </div>
+
+    <div class="grid">
+
+      <!-- 1 -->
+      <article class="card">
+        <div class="card-top"><span class="code">EPP-01</span><span class="func">Protéger · Détecter</span></div>
+        <h3>Sécurité des Endpoints</h3>
+        <p class="desc">Protection managée du parc de terminaux : déploiement, supervision et administration continue de l'EDR/XDR, durcissement des configurations et réponse aux incidents postes.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Console EDR/XDR opérée 24/7, politiques réglées sur votre exposition métier.</li>
+          <li>Rapport mensuel de posture endpoint (couverture, incidents, délais de remédiation).</li>
+          <li>Playbooks de confinement et d'isolation des postes compromis.</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Détection et confinement des menaces sur le poste réduits à quelques minutes, sans mobiliser d'expertise interne rare.</p>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="card">
+        <div class="card-top"><span class="code">IAM-02</span><span class="func">Protéger</span></div>
+        <h3>Gestion des Identités & Accès</h3>
+        <p class="desc">Gouvernance externalisée des identités : provisioning/déprovisioning, MFA, revues d'accès et rationalisation des privilèges sur tout le cycle de vie des comptes.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Cartographie des identités et matrice des droits (privilèges, services, comptes dormants).</li>
+          <li>Campagnes de revue d'accès périodiques avec attestation formalisée.</li>
+          <li>Tableau de bord IAM (couverture MFA, comptes orphelins, écarts SoD).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Surface d'attaque liée aux identités réduite et exigences d'accès des référentiels satisfaites, preuves à l'appui.</p>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="card">
+        <div class="card-top"><span class="code">VMS-03</span><span class="func">Identifier</span></div>
+        <h3>Gestion des Vulnérabilités</h3>
+        <p class="desc">Cycle continu de scan, priorisation contextualisée (criticité métier × exploitabilité), suivi de remédiation et vérification de correction sur tout le périmètre.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Scans récurrents interne/externe, rapport priorisé par risque réel — pas par CVSS brut.</li>
+          <li>Plan de remédiation avec SLA de correction par niveau de criticité.</li>
+          <li>Indicateurs de tendance (délai moyen, taux de récurrence, backlog).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Un flux ingérable de vulnérabilités transformé en plan d'action priorisé et mesurable, aligné sur l'appétence au risque.</p>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="card">
+        <div class="card-top"><span class="code">NET-04</span><span class="func">Protéger</span></div>
+        <h3>Sécurité Réseau</h3>
+        <p class="desc">Conception, supervision et administration du filtrage et de la segmentation (pare-feu, VLAN, NAC, IDS/IPS), durcissement des équipements et contrôle des flux inter-zones.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Architecture de segmentation documentée et matrice des flux autorisés.</li>
+          <li>Revue périodique des règles (nettoyage, règles obsolètes, shadow rules).</li>
+          <li>Rapport de détection réseau (intrusions, flux anormaux, mouvements latéraux).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Propagation latérale limitée en cas de compromission et flux maîtrisés de façon démontrable — socle d'une architecture Zero Trust.</p>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="card">
+        <div class="card-top"><span class="code">DAT-05</span><span class="func">Protéger</span></div>
+        <h3>Sécurité des Données</h3>
+        <p class="desc">Protection du cycle de vie de la donnée : classification, chiffrement, DLP et contrôle des accès, en cohérence avec les obligations réglementaires.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Schéma de classification et cartographie des données sensibles.</li>
+          <li>Politique de chiffrement et de gestion des clés opérationnalisée.</li>
+          <li>Rapport DLP (tentatives d'exfiltration, canaux à risque, incidents qualifiés).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Risque de fuite et de sanction réduit, avec une visibilité claire sur où sont vos données critiques et qui y accède.</p>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="card">
+        <div class="card-top"><span class="code">AWR-06</span><span class="func">Protéger · Facteur humain</span></div>
+        <h3>Sensibilisation & Formation</h3>
+        <p class="desc">Programme continu d'acculturation cyber : phishing simulé, e-learning ciblé par population et formations dédiées aux profils à risque (dirigeants, IT, financiers).</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Plan annuel segmenté par population et niveau de risque.</li>
+          <li>Campagnes de phishing simulé avec analyse comportementale et taux de clic.</li>
+          <li>Tableau de bord de maturité humaine (progression, risque résiduel).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Le vecteur n°1 des compromissions traité avec des métriques d'évolution exploitables pour piloter et démontrer le risque.</p>
+        </div>
+      </article>
+
+      <!-- 7 -->
+      <article class="card">
+        <div class="card-top"><span class="code">BCK-07</span><span class="func">Récupérer</span></div>
+        <h3>Sauvegarde & Restauration</h3>
+        <p class="desc">Sauvegardes managées selon une stratégie résiliente (3-2-1, immuabilité, isolement anti-ransomware) avec tests de restauration réguliers.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Politique de sauvegarde formalisée (RPO/RTO par actif, rétention, immuabilité).</li>
+          <li>Rapports de succès/échec et supervision continue.</li>
+          <li>Tests de restauration documentés avec preuve de reprise effective.</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Une reprise réelle et non théorique face au ransomware — la différence entre une sauvegarde qui existe et une qui restaure.</p>
+        </div>
+      </article>
+
+      <!-- 8 -->
+      <article class="card">
+        <div class="card-top"><span class="code">PEN-08</span><span class="func">Identifier</span></div>
+        <h3>Test d'Intrusion</h3>
+        <p class="desc">Campagnes de pentest à la demande ou récurrentes (externe, interne, web, applicatif, ingénierie sociale) avec restitution actionnable et suivi de remédiation.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Rapport hiérarchisé (impact métier, exploitabilité, preuve d'exploitation).</li>
+          <li>Plan de remédiation priorisé et restitution technique.</li>
+          <li>Retest post-remédiation attestant de la correction.</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>L'efficacité réelle de vos défenses validée par la mise à l'épreuve offensive, au-delà de la conformité déclarative.</p>
+        </div>
+      </article>
+
+      <!-- 9 -->
+      <article class="card">
+        <div class="card-top"><span class="code">AIS-09</span><span class="func">Protéger · Émergent</span></div>
+        <h3>Sécurité des Écosystèmes IA</h3>
+        <p class="desc">Sécurisation des usages et déploiements IA/LLM : gouvernance des données, protection contre les attaques spécifiques (prompt injection, empoisonnement) et encadrement du Shadow AI.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Cartographie des usages IA (officiels et Shadow AI) et risques associés.</li>
+          <li>Politique d'usage sécurisé de l'IA et garde-fous techniques (filtrage, DLP prompts).</li>
+          <li>Rapport de posture IA (surface d'exposition, dépendances, écarts).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Un risque émergent encore peu couvert maîtrisé : adopter l'IA en avantage compétitif sans ouvrir de nouvelle brèche.</p>
+        </div>
+      </article>
+
+      <!-- 10 -->
+      <article class="card">
+        <div class="card-top"><span class="code">SOC-10</span><span class="func">Détecter · Répondre</span></div>
+        <h3>SOC-as-a-Service</h3>
+        <p class="desc">Détection et réponse aux incidents 24/7 via SIEM/SOAR opéré, corrélation d'événements, threat intelligence et prise en charge de bout en bout des alertes qualifiées.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Supervision continue, use cases alignés sur votre exposition et MITRE ATT&CK.</li>
+          <li>Rapports d'incidents qualifiés (chronologie, impact, actions de réponse).</li>
+          <li>Reporting mensuel (volumétrie, MTTD/MTTR, top menaces, recommandations).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Une capacité de détection de niveau entreprise sans le coût d'un SOC interne, avec des délais mesurés et contractualisés.</p>
+        </div>
+      </article>
+
+      <!-- 11 -->
+      <article class="card">
+        <div class="card-top"><span class="code">GRC-11</span><span class="func">Gouverner</span></div>
+        <h3>Gouvernance, Risque & Conformité</h3>
+        <p class="desc">Pilotage externalisé du SMSI : gestion documentaire, analyse et traitement des risques, suivi des plans de conformité et préparation aux audits et certifications.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Analyse de risques tenue à jour et plan de traitement suivi.</li>
+          <li>Corpus documentaire (politiques, procédures) maintenu et versionné.</li>
+          <li>Tableau de bord de conformité multi-référentiel et registre des preuves.</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Un niveau de conformité permanent et non ponctuel : l'audit devient une simple formalité de restitution.</p>
+        </div>
+      </article>
+
+      <!-- 12 -->
+      <article class="card">
+        <div class="card-top"><span class="code">MAT-12</span><span class="func">Identifier · Gouverner</span></div>
+        <h3>Audit & Maturité Sécurité SI</h3>
+        <p class="desc">Évaluation objective et périodique de la posture (gap analysis, scoring par domaine) et feuille de route priorisée par le risque et le ROI sécurité.</p>
+        <div class="deliv-label">Livrables</div>
+        <ul class="deliv">
+          <li>Rapport de maturité par domaine (échelle niveau 1 à 5) et analyse des écarts.</li>
+          <li>Feuille de route priorisée (quick wins vs chantiers structurants).</li>
+          <li>Synthèse exécutive COMEX (exposition au risque, investissements, KPI).</li>
+        </ul>
+        <div class="value">
+          <div class="value-label">Valeur ajoutée</div>
+          <p>Une vision chiffrée du niveau de sécurité réel pour arbitrer les investissements et démontrer la progression dans le temps.</p>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- CLOSING -->
+  <section class="close">
+    <div>
+      <div class="ceyebrow">Construisez votre dispositif</div>
+      <h2>Une brique, plusieurs, ou la fonction sécurité complète.</h2>
+      <p>Activez les services au rythme de votre exposition et de votre trajectoire de conformité. Chaque livrable est réutilisable en audit interne comme externe.</p>
+    </div>
+    <div class="contact">
+      <div class="row">Devis & activation <span>›</span></div>
+      <b>contact@ignaceyao.org</b><br>
+      <b>+225 05 03 85 48 48</b><br>
+      <b>www.ignaceyao.org</b>
+    </div>
+  </section>
+
+  <div class="footline">
+    <span>PACK CISO-as-a-Service · Catalogue de services managés</span>
+    <span>Approche basée sur le risque · Compatible certification</span>
+  </div>
+
+</div>
+</body>
+</html>

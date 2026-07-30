@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Modifier' if item else 'Ajouter' }} un service - Administration{% endblock %}
+{% block content %}
+<h1>{{ 'Modifier' if item else 'Ajouter' }} un service</h1>
+
+<form class="admin-form" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-field">
+    <label for="code">Code (ex. EPP-01)</label>
+    <input type="text" id="code" name="code" value="{{ item.code if item and item.code else '' }}" placeholder="EPP-01">
+  </div>
+  <div class="form-field">
+    <label for="function_tag">Fonction (ex. Protéger · Détecter)</label>
+    <input type="text" id="function_tag" name="function_tag" value="{{ item.function_tag if item and item.function_tag else '' }}" placeholder="Protéger · Détecter">
+  </div>
+  <div class="form-field">
+    <label for="title">Titre</label>
+    <input type="text" id="title" name="title" value="{{ item.title if item else '' }}" required>
+  </div>
+  <div class="form-field">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" required>{{ item.description if item else '' }}</textarea>
+  </div>
+  <div class="form-field">
+    <label for="deliverables">Livrables (un par ligne)</label>
+    <textarea id="deliverables" name="deliverables" placeholder="Console EDR/XDR opérée 24/7...&#10;Rapport mensuel de posture endpoint...&#10;Playbooks de confinement...">{{ item.deliverables if item and item.deliverables else '' }}</textarea>
+  </div>
+  <div class="form-field">
+    <label for="value_text">Valeur ajoutée</label>
+    <textarea id="value_text" name="value_text" placeholder="Détection et confinement des menaces réduits à quelques minutes...">{{ item.value_text if item and item.value_text else '' }}</textarea>
+  </div>
+  <div class="form-field">
+    <label for="link_url">Lien externe (optionnel)</label>
+    <input type="url" id="link_url" name="link_url" value="{{ item.link_url if item and item.link_url else '' }}" placeholder="https://...">
+  </div>
+  <div class="form-field">
+    <label for="position">Ordre d'affichage</label>
+    <input type="number" id="position" name="position" value="{{ item.position if item else 0 }}">
+  </div>
+  <div class="actions-row">
+    <button type="submit" class="btn">Enregistrer</button>
+    <a class="btn-small" href="{{ url_for('admin.services_list') }}">Annuler</a>
+  </div>
+</form>
+{% endblock %}

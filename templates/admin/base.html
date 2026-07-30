@@ -18,7 +18,7 @@
     <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">Tableau de bord</a>
     <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint == 'admin.settings' }}">Contenu du site</a>
     <div class="divider"></div>
-    <a href="{{ url_for('admin.content_list', kind='services') }}" class="{{ 'active' if request.view_args and request.view_args.get('kind') == 'services' }}">Services</a>
+    <a href="{{ url_for('admin.services_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.services') }}">Services</a>
     <a href="{{ url_for('admin.tutorials_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.tutorials') }}">Tutoriels</a>
     <a href="{{ url_for('admin.content_list', kind='news') }}" class="{{ 'active' if request.view_args and request.view_args.get('kind') == 'news' }}">Actualités</a>
     <a href="{{ url_for('admin.documents_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.documents') }}">Documents</a>

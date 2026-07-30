@@ -146,9 +146,27 @@
     {% if services %}
     <div class="item-list reveal-group">
       {% for service in services %}
-      <div class="item reveal">
+      <div class="item service-card reveal">
+        <div class="service-top">
+          {% if service.code %}<span class="service-code">{{ service.code }}</span>{% endif %}
+          {% if service.function_tag %}<span class="service-fn">{{ service.function_tag }}</span>{% endif %}
+        </div>
         <h3>{{ service.title }}</h3>
         <p>{{ service.description }}</p>
+        {% if service.deliverables_list %}
+        <div class="service-label">Livrables</div>
+        <ul class="service-deliv">
+          {% for d in service.deliverables_list %}
+          <li>{{ d }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if service.value_text %}
+        <div class="service-value">
+          <div class="service-label">Valeur ajoutée</div>
+          <p>{{ service.value_text }}</p>
+        </div>
+        {% endif %}
         {% if service.link_url %}
         <a class="item-more" href="{{ service.link_url }}" target="_blank" rel="noopener noreferrer">En savoir plus →</a>
         {% endif %}

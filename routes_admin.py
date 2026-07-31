@@ -6,7 +6,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 
 from extensions import limiter
-from models import db, User, SiteSetting, Service, Tutorial, NewsItem, Document
+from models import db, User, SiteSetting, Service, ServiceSection, Tutorial, NewsItem, Document
 
 admin_bp = Blueprint("admin", __name__, template_folder="templates/admin")
 
@@ -281,6 +281,23 @@ def _service_form_data():
     }
 
 
+def _sync_service_sections(item):
+    """Reconstruit les blocs personnalisés d'un service depuis les champs
+    section_title[] / section_content[] du formulaire (nombre variable)."""
+    titles = request.form.getlist("section_title[]")
+    contents = request.form.getlist("section_content[]")
+
+    item.sections.clear()
+    position = 0
+    for title, content in zip(titles, contents):
+        title = title.strip()
+        content = content.strip()
+        if not title or not content:
+            continue
+        position += 1
+        item.sections.append(ServiceSection(title=title, content=content, position=position))
+
+
 @admin_bp.route("/content/services/new", methods=["GET", "POST"])
 @login_required
 def services_new():
@@ -290,7 +307,18 @@ def services_new():
             flash("Le titre et la description sont obligatoires.", "error")
             return render_template("admin/service_form.html", item=None)
 
-        item = Service(**data)
+        image_file = request.files.get("image_file")
+        image_filename = None
+        if image_file and image_file.filename:
+            if not allowed_file(image_file.filename, ALLOWED_IMAGE_EXTENSIONS):
+                flash("Format d'image non supporté (jpg, png, gif, webp).", "error")
+                return render_template("admin/service_form.html", item=None)
+            original_name = secure_filename(image_file.filename)
+            image_filename = f"{uuid.uuid4().hex}_{original_name}"
+            image_file.save(os.path.join(current_app.config["UPLOAD_DIR"], image_filename))
+
+        item = Service(image_filename=image_filename, **data)
+        _sync_service_sections(item)
         db.session.add(item)
         db.session.commit()
         flash("Service ajouté.", "success")
@@ -310,8 +338,21 @@ def services_edit(item_id):
             flash("Le titre et la description sont obligatoires.", "error")
             return render_template("admin/service_form.html", item=item)
 
+        image_file = request.files.get("image_file")
+        if image_file and image_file.filename:
+            if not allowed_file(image_file.filename, ALLOWED_IMAGE_EXTENSIONS):
+                flash("Format d'image non supporté (jpg, png, gif, webp).", "error")
+                return render_template("admin/service_form.html", item=item)
+            old_path = os.path.join(current_app.config["UPLOAD_DIR"], item.image_filename or "")
+            if item.image_filename and os.path.exists(old_path):
+                os.remove(old_path)
+            original_name = secure_filename(image_file.filename)
+            data["image_filename"] = f"{uuid.uuid4().hex}_{original_name}"
+            image_file.save(os.path.join(current_app.config["UPLOAD_DIR"], data["image_filename"]))
+
         for key, value in data.items():
             setattr(item, key, value)
+        _sync_service_sections(item)
         db.session.commit()
         flash("Service mis à jour.", "success")
         return redirect(url_for("admin.services_list"))
@@ -323,6 +364,10 @@ def services_edit(item_id):
 @login_required
 def services_delete(item_id):
     item = Service.query.get_or_404(item_id)
+    if item.image_filename:
+        path = os.path.join(current_app.config["UPLOAD_DIR"], item.image_filename)
+        if os.path.exists(path):
+            os.remove(path)
     db.session.delete(item)
     db.session.commit()
     flash("Service supprimé.", "success")

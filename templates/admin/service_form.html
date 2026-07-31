@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{ 'Modifier' if item else 'Ajouter' }} un service</h1>
 
-<form class="admin-form" method="post">
+<form class="admin-form" method="post" enctype="multipart/form-data">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div class="form-field">
     <label for="code">Code (ex. EPP-01)</label>
@@ -18,6 +18,14 @@
     <input type="text" id="title" name="title" value="{{ item.title if item else '' }}" required>
   </div>
   <div class="form-field">
+    <label for="image_file">Image (jpg, png, gif, webp)</label>
+    <input type="file" id="image_file" name="image_file" accept="image/*">
+    {% if item and item.image_filename %}
+      <img src="{{ url_for('static', filename='uploads/' ~ item.image_filename) }}" alt="" style="max-width:220px;border-radius:6px;margin-top:8px">
+      <span class="sub" style="margin:4px 0 0">Une image est déjà associée. Sélectionnez-en une nouvelle pour la remplacer.</span>
+    {% endif %}
+  </div>
+  <div class="form-field">
     <label for="description">Description</label>
     <textarea id="description" name="description" required>{{ item.description if item else '' }}</textarea>
   </div>
@@ -29,6 +37,24 @@
     <label for="value_text">Valeur ajoutée</label>
     <textarea id="value_text" name="value_text" placeholder="Détection et confinement des menaces réduits à quelques minutes...">{{ item.value_text if item and item.value_text else '' }}</textarea>
   </div>
+
+  <div class="form-field">
+    <label>Sections supplémentaires (optionnel)</label>
+    <span class="sub" style="margin:0 0 4px">Ajoutez autant de blocs que nécessaire (ex. Prérequis, Tarification, Public cible).</span>
+    <div id="service-sections">
+      {% if item and item.sections %}
+        {% for section in item.sections %}
+        <div class="service-section-row">
+          <input type="text" name="section_title[]" value="{{ section.title }}" placeholder="Titre du bloc (ex. Prérequis)">
+          <textarea name="section_content[]" placeholder="Contenu du bloc">{{ section.content }}</textarea>
+          <button type="button" class="btn-small danger remove-section">Retirer</button>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <button type="button" id="add-section" class="btn-small" style="margin-top:8px;width:fit-content">+ Ajouter une section</button>
+  </div>
+
   <div class="form-field">
     <label for="link_url">Lien externe (optionnel)</label>
     <input type="url" id="link_url" name="link_url" value="{{ item.link_url if item and item.link_url else '' }}" placeholder="https://...">
@@ -42,4 +68,31 @@
     <a class="btn-small" href="{{ url_for('admin.services_list') }}">Annuler</a>
   </div>
 </form>
+
+<template id="service-section-template">
+  <div class="service-section-row">
+    <input type="text" name="section_title[]" placeholder="Titre du bloc (ex. Prérequis)">
+    <textarea name="section_content[]" placeholder="Contenu du bloc"></textarea>
+    <button type="button" class="btn-small danger remove-section">Retirer</button>
+  </div>
+</template>
+
+<script>
+(function () {
+  var container = document.getElementById("service-sections");
+  var template = document.getElementById("service-section-template");
+  var addBtn = document.getElementById("add-section");
+
+  addBtn.addEventListener("click", function () {
+    var clone = template.content.cloneNode(true);
+    container.appendChild(clone);
+  });
+
+  container.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-section")) {
+      e.target.closest(".service-section-row").remove();
+    }
+  });
+})();
+</script>
 {% endblock %}

@@ -130,3 +130,14 @@
 .admin-table .row-actions{display:flex;gap:8px;flex-wrap:wrap}
 .btn-small{min-height:38px;display:inline-flex;align-items:center;justify-content:center}
 .btn-small:active{transform:none}
+
+/* Service sections dynamiques */
+.service-section-row{
+  display:flex;flex-direction:column;gap:8px;
+  border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--surface);
+}
+.service-section-row input,.service-section-row textarea{
+  padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;
+}
+.service-section-row textarea{min-height:70px;resize:vertical}
+.service-section-row .remove-section{align-self:flex-end}

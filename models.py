@@ -43,17 +43,33 @@ class Service(db.Model):
     function_tag = db.Column(db.String(120), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    image_filename = db.Column(db.String(300), nullable=True)
     deliverables = db.Column(db.Text, nullable=True)  # une ligne = un livrable
     value_text = db.Column(db.Text, nullable=True)
     link_url = db.Column(db.String(500), nullable=True)
     position = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    sections = db.relationship(
+        "ServiceSection", backref="service", order_by="ServiceSection.position",
+        cascade="all, delete-orphan",
+    )
+
     @property
     def deliverables_list(self):
         if not self.deliverables:
             return []
         return [line.strip() for line in self.deliverables.splitlines() if line.strip()]
+
+
+class ServiceSection(db.Model):
+    __tablename__ = "service_sections"
+
+    id = db.Column(db.Integer, primary_key=True)
+    service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    position = db.Column(db.Integer, default=0)
 
 
 class Tutorial(db.Model):

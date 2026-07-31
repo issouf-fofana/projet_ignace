@@ -102,9 +102,52 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        _run_migrations()
         _ensure_default_settings()
 
     return app
+
+
+def _run_migrations():
+    """Ajoute automatiquement les colonnes/tables manquantes au démarrage.
+
+    db.create_all() ne crée que les tables absentes, jamais les colonnes
+    manquantes sur une table existante. Cette fonction rejoue donc, à chaque
+    démarrage du conteneur, l'ensemble des ALTER TABLE nécessaires de façon
+    idempotente (sans danger si déjà appliqués) afin qu'un simple `git push`
+    + redéploiement Dokploy suffise, sans étape manuelle en terminal.
+    """
+    from sqlalchemy import text
+
+    dialect = db.engine.dialect.name
+
+    def add_column(table, column, col_type):
+        if dialect == "postgresql":
+            db.session.execute(text(
+                f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {column} {col_type}"
+            ))
+        else:
+            existing = [row[1] for row in db.session.execute(text(f"PRAGMA table_info({table})"))]
+            if column not in existing:
+                db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}"))
+
+    add_column("services", "link_url", "VARCHAR(500)")
+    add_column("tutorials", "link_url", "VARCHAR(500)")
+    add_column("news_items", "link_url", "VARCHAR(500)")
+
+    add_column("services", "code", "VARCHAR(20)")
+    add_column("services", "function_tag", "VARCHAR(120)")
+    add_column("services", "deliverables", "TEXT")
+    add_column("services", "value_text", "TEXT")
+
+    add_column("services", "image_filename", "VARCHAR(300)")
+
+    db.session.commit()
+
+    # Les tables manquantes (ex. service_sections) sont créées par create_all(),
+    # déjà appelé juste avant. On le rappelle ici par sécurité si de nouveaux
+    # modèles ont été ajoutés depuis.
+    db.create_all()
 
 
 def _ensure_default_settings():

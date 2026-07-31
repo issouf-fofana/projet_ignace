@@ -383,6 +383,7 @@ ul.service-deliv li::before{
 .modal-desc{margin:0;color:var(--muted);font-size:15px;line-height:1.7;white-space:pre-line}
 .modal-image{width:100%;border-radius:var(--radius);margin:0 0 20px;display:block;max-height:320px;object-fit:cover}
 .modal-video{margin:0 0 20px}
+.modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 
 /* =========================================================
    DOCUMENTS

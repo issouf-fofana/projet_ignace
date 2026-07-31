@@ -146,13 +146,30 @@
     {% if services %}
     <div class="item-list reveal-group">
       {% for service in services %}
-      <div class="item service-card reveal">
+      <button type="button" class="item service-card item-clickable reveal" data-open-modal="service-{{ service.id }}" aria-haspopup="dialog">
         <div class="service-top">
           {% if service.code %}<span class="service-code">{{ service.code }}</span>{% endif %}
           {% if service.function_tag %}<span class="service-fn">{{ service.function_tag }}</span>{% endif %}
         </div>
         <h3>{{ service.title }}</h3>
-        <p>{{ service.description }}</p>
+        <p>{{ service.description|truncate(140) }}</p>
+        <span class="item-more">Voir le détail →</span>
+      </button>
+      {% endfor %}
+    </div>
+
+    {% for service in services %}
+    <div class="modal-overlay" id="modal-service-{{ service.id }}" data-modal-overlay>
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title-service-{{ service.id }}">
+        <button type="button" class="modal-close" data-close-modal aria-label="Fermer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+        <div class="service-top">
+          {% if service.code %}<span class="service-code">{{ service.code }}</span>{% endif %}
+          {% if service.function_tag %}<span class="service-fn">{{ service.function_tag }}</span>{% endif %}
+        </div>
+        <h3 id="modal-title-service-{{ service.id }}">{{ service.title }}</h3>
+        <p class="modal-desc">{{ service.description }}</p>
         {% if service.deliverables_list %}
         <div class="service-label">Livrables</div>
         <ul class="service-deliv">
@@ -167,12 +184,17 @@
           <p>{{ service.value_text }}</p>
         </div>
         {% endif %}
-        {% if service.link_url %}
-        <a class="item-more" href="{{ service.link_url }}" target="_blank" rel="noopener noreferrer">En savoir plus →</a>
-        {% endif %}
+        <div class="modal-actions">
+          <a class="btn" href="mailto:{{ settings.contact_email }}?subject={{ ('Demande de service : ' ~ service.title)|urlencode }}&body={{ ('Bonjour,%0D%0A%0D%0AJe souhaite en savoir plus sur le service \"' ~ service.title ~ '\" (' ~ (service.code or '') ~ ').%0D%0A%0D%0AMerci de me recontacter.')|urlencode }}">
+            Demander ce service →
+          </a>
+          {% if service.link_url %}
+          <a class="btn-small" href="{{ service.link_url }}" target="_blank" rel="noopener noreferrer">En savoir plus</a>
+          {% endif %}
+        </div>
       </div>
-      {% endfor %}
     </div>
+    {% endfor %}
     {% else %}
     <p class="empty-state">Aucun service publié pour le moment.</p>
     {% endif %}

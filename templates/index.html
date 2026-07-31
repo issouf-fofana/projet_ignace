@@ -197,7 +197,7 @@
         </div>
         {% endfor %}
         <div class="modal-actions">
-          <a class="btn" href="mailto:{{ settings.contact_email }}?subject={{ ('Demande de service : ' ~ service.title)|urlencode }}&body={{ ('Bonjour,%0D%0A%0D%0AJe souhaite en savoir plus sur le service \"' ~ service.title ~ '\" (' ~ (service.code or '') ~ ').%0D%0A%0D%0AMerci de me recontacter.')|urlencode }}">
+          <a class="btn" href="mailto:{{ settings.contact_email }}?subject={{ ('Demande de service : ' ~ service.title)|urlencode }}&body={{ ('Bonjour,\n\nJe souhaite en savoir plus sur le service ' ~ service.title ~ ' (' ~ (service.code or '') ~ ').\n\nMerci de me recontacter.')|urlencode }}">
             Demander ce service →
           </a>
           {% if service.link_url %}

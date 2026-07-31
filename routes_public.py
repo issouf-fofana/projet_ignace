@@ -78,7 +78,13 @@ def contact():
     sent = False
     if to_addr:
         try:
-            sent = send_contact_email(to_addr, subject, body, reply_to=email)
+            sent = send_contact_email(
+                to_addr, subject, body, reply_to=email,
+                smtp_host=settings.get("smtp_host"),
+                smtp_port=settings.get("smtp_port"),
+                smtp_user=settings.get("smtp_user"),
+                smtp_password=settings.get("smtp_password"),
+            )
         except Exception:
             sent = False
 

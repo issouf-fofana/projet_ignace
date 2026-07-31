@@ -54,6 +54,9 @@
       <label for="{{ key }}">{{ label }}</label>
       {% if key in ("hero_tagline", "about_text") %}
         <textarea id="{{ key }}" name="{{ key }}">{{ values.get(key, "") }}</textarea>
+      {% elif key == "smtp_password" %}
+        <input type="password" id="{{ key }}" name="{{ key }}" value="{{ values.get(key, '') }}" autocomplete="new-password">
+        <span class="sub" style="margin:0">Laissez tel quel si vous ne changez pas le mot de passe.</span>
       {% else %}
         <input type="text" id="{{ key }}" name="{{ key }}" value="{{ values.get(key, '') }}">
       {% endif %}

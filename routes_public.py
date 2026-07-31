@@ -1,9 +1,11 @@
 import os
 import re
 
-from flask import Blueprint, render_template, send_from_directory, abort, current_app
+from flask import Blueprint, render_template, send_from_directory, abort, current_app, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 
+from extensions import limiter
+from mailer import send_contact_email
 from models import SiteSetting, Service, Tutorial, NewsItem, Document
 
 public_bp = Blueprint("public", __name__)
@@ -45,6 +47,47 @@ def index():
         news_items=news_items,
         to_embed_url=to_embed_url,
     )
+
+
+@public_bp.route("/contact", methods=["POST"])
+@limiter.limit("5/minute")
+def contact():
+    settings = get_settings()
+    name = (request.form.get("name") or "").strip()
+    email = (request.form.get("email") or "").strip()
+    message = (request.form.get("message") or "").strip()
+    service_title = (request.form.get("service_title") or "").strip()
+    service_code = (request.form.get("service_code") or "").strip()
+
+    if not name or not email or not message:
+        flash("Merci de remplir tous les champs du formulaire.", "error")
+        return redirect(url_for("public.index") + "#contact")
+
+    subject = f"Demande de service : {service_title}" if service_title else "Nouveau message depuis le site"
+    body_lines = [
+        f"Nom : {name}",
+        f"E-mail : {email}",
+    ]
+    if service_title:
+        body_lines.append(f"Service concerné : {service_title}" + (f" ({service_code})" if service_code else ""))
+    body_lines.append("")
+    body_lines.append(message)
+    body = "\n".join(body_lines)
+
+    to_addr = settings.get("contact_email")
+    sent = False
+    if to_addr:
+        try:
+            sent = send_contact_email(to_addr, subject, body, reply_to=email)
+        except Exception:
+            sent = False
+
+    if sent:
+        flash("Votre message a bien été envoyé. Nous vous répondrons rapidement.", "success")
+    else:
+        flash("L'envoi automatique n'est pas disponible pour le moment. Merci de nous contacter directement à " + (to_addr or "") + ".", "error")
+
+    return redirect(url_for("public.index") + "#contact")
 
 
 @public_bp.route("/documents")

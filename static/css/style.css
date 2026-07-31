@@ -424,6 +424,20 @@ ul.service-deliv li::before{
 .flash.success{background:#E4EFEB;color:#184A3E;border-color:#184A3E}
 .flash.error{background:#FBEAEA;color:#8A2A2A;border-color:#8A2A2A}
 
+.contact-form{max-width:480px;display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.contact-form .form-field{display:flex;flex-direction:column;gap:6px}
+.contact-form label{font-size:13px;font-weight:650;color:var(--text)}
+.contact-form input,.contact-form textarea{
+  padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;
+  transition:border-color var(--t),box-shadow var(--t);
+}
+.contact-form textarea{resize:vertical;min-height:120px}
+.contact-form input:focus,.contact-form textarea:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.contact-form .btn{align-self:flex-start}
+
 .doc-list{display:grid;gap:14px;grid-template-columns:1fr}
 .doc-card{
   display:flex;align-items:center;gap:14px;padding:18px;
